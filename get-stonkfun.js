@@ -9,7 +9,7 @@ async function fetchStonkfunTokens() {
       throw new Error(`Top API returned status ${topResponse.status}`);
     }
     const topData = await topResponse.json();
-    const topTokens = (topData.data?.tokens || []).slice(0, 1); //1 token
+    const topTokens = (topData.data?.tokens || []).slice(0, 10); // Enforce 10 tokens limit manually
 
     // Fetch Newest tokens
     const newestResponse = await fetch(API_URL_NEWEST);
@@ -17,7 +17,7 @@ async function fetchStonkfunTokens() {
       throw new Error(`Newest API returned status ${newestResponse.status}`);
     }
     const newestData = await newestResponse.json();
-    const newestTokens = (newestData.data?.tokens || []).slice(0, 1); //1 token
+    const newestTokens = (newestData.data?.tokens || []).slice(0, 10); // Enforce 10 tokens limit manually
 
     // Combine and deduplicate by mint
     const combinedTokens = [...topTokens, ...newestTokens];
@@ -40,7 +40,17 @@ async function fetchStonkfunTokens() {
     // });
 
     // Output all the metadata for the tokens
-    console.log(JSON.stringify(uniqueTokens, null, 2));
+    // console.log(JSON.stringify(uniqueTokens, null, 2));
+
+    // Print counts to see maximum output, commented so they don't interfere with data piping
+    console.log(`// Top API returned: ${topTokens.length} tokens`);
+    console.log(`// Newest API returned: ${newestTokens.length} tokens`);
+    console.log(`// Total unique mint addresses: ${uniqueTokens.length}`);
+    
+    // Only print mint addresses
+    uniqueTokens.forEach(token => {
+      console.log(token.mint);
+    });
 
   } catch (error) {
     console.error("Error fetching Stonkfun tokens:", error);

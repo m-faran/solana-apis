@@ -45,40 +45,48 @@ async function fetchStocks() {
     const data = await response.json();
     const tokens = data.tokens || [];
 
-    // --- NOTE: The code below listing xStocks has been commented out as requested ---
-    // const xStocks = tokens.filter(token => {
-    //   const name = token.name || "";
-    //   const isOndo = name.toLowerCase().includes('ondo');
-    //   const isBackpack = name.toLowerCase().includes('backpack');
-    //   const isXStock = name.toLowerCase().includes('xstock');
-    // 
-    //   return !isOndo && !isBackpack && isXStock;
-    // });
-    // 
-    // console.log("mint,note");
+    // --- xStocks filtering ---
+    const xStocks = tokens.filter(token => {
+      const name = token.name || "";
+      const isOndo = name.toLowerCase().includes('ondo');
+      const isBackpack = name.toLowerCase().includes('backpack');
+      const isXStock = name.toLowerCase().includes('xstock');
+    
+      return !isOndo && !isBackpack && isXStock;
+    });
+    
+    // Print mint, symbol, and name
+    // console.log(`// Total xStocks found: ${xStocks.length}`);
+    // console.log("Mint,Symbol,Name");
     // xStocks.forEach(stock => {
-    //   console.log(`${stock.mint},${stock.name}`);
+    //   // Replace commas in name/symbol to avoid breaking the CSV output
+    //   const name = (stock.name || 'N/A').replace(/,/g, '');
+    //   const symbol = (stock.symbol || 'N/A').replace(/,/g, '');
+    //   console.log(`${stock.mint},${symbol},${name}`);
     // });
 
-    // --- NOTE: The code below listing pre/ipo/t stocks has been commented out as requested ---
-    // const selectedStocks = tokens.filter(token => {
-    //   const name = token.name || "";
-    //   const isOndo = name.toLowerCase().includes('ondo');
-    //   const isBackpack = name.toLowerCase().includes('backpack');
-    //   const isXStock = name.toLowerCase().includes('xstock');
-    //   const isSpaceX = name.toLowerCase().includes('spacex');
-    //   
-    //   const isPre = name.toLowerCase().includes('prestock');
-    //   const isIpo = name.toLowerCase().includes('ipo') && !name.toLowerCase().includes('chipotle');
-    //   const isT = name.toLowerCase().startsWith('t-') || name.toLowerCase().includes('tstock');
-    // 
-    //   return !isOndo && !isBackpack && !isXStock && !isSpaceX && (isPre || isIpo || isT);
-    // });
-    // 
-    // console.log("mint,note");
-    // selectedStocks.forEach(stock => {
-    //   console.log(`${stock.mint},${stock.name}`);
-    // });
+    // --- Pre/IPO/T-Stocks filtering ---
+    const selectedStocks = tokens.filter(token => {
+      const name = token.name || "";
+      const isOndo = name.toLowerCase().includes('ondo');
+      const isBackpack = name.toLowerCase().includes('backpack');
+      const isXStock = name.toLowerCase().includes('xstock');
+      const isSpaceX = name.toLowerCase().includes('spacex');
+      
+      const isPre = name.toLowerCase().includes('prestock');
+      const isIpo = name.toLowerCase().includes('ipo') && !name.toLowerCase().includes('chipotle');
+      const isT = name.toLowerCase().startsWith('t-') || name.toLowerCase().includes('tstock');
+    
+      return !isOndo && !isBackpack && !isXStock && !isSpaceX && (isPre || isIpo || isT);
+    });
+    
+    console.log(`// Total Pre/IPO/T-Stocks found: ${selectedStocks.length}`);
+    console.log("Mint,Symbol,Name");
+    selectedStocks.forEach(stock => {
+      const name = (stock.name || 'N/A').replace(/,/g, '');
+      const symbol = (stock.symbol || 'N/A').replace(/,/g, '');
+      console.log(`${stock.mint},${symbol},${name}`);
+    });
 
     const targetSymbols = [
       'AAPLx', 'GOOGLx', 'MSFTx', 'AMZNx', 'NVDAx', 'TSLAx', 'METAx', 'NFLXx', 'ORCLx',
@@ -95,9 +103,9 @@ async function fetchStocks() {
     // });
     
     // Output the entire metadata for one single token
-    if (specificStocks.length > 0) {
-      console.log(JSON.stringify(specificStocks[0], null, 2));
-    }
+    // if (specificStocks.length > 0) {
+    //   console.log(JSON.stringify(specificStocks[0], null, 2));
+    // }
 
   } catch (error) {
     console.error("Error fetching stocks:", error);
